@@ -282,7 +282,9 @@ server {
 	{{ else if (exists "/etc/nginx/vhost.d/default") }}
 	include /etc/nginx/vhost.d/default;
 	{{ end }}
-
+	{{ if (exists (printf "/etc/nginx/vhost.d/%s_locations" $host)) }}
+	include {{ printf "/etc/nginx/vhost.d/%s_locations" $host}};
+	{{ else }}
 	location / {
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
@@ -305,6 +307,7 @@ server {
 		include /etc/nginx/vhost.d/default_location;
 		{{ end }}
 	}
+	{{ end }}
 }
 
 {{ end }}
